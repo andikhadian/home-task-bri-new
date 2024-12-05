@@ -40,9 +40,12 @@ export class UserService {
       }),
     ]);
 
+    const totalPages = total ? Math.ceil(total / limit) : 1;
+
     return {
       data: users,
       total,
+      total_pages: totalPages,
       page,
       limit,
     };
