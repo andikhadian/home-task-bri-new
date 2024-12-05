@@ -1,15 +1,17 @@
-import { GetUsersResponse } from '@/types/user';
-import { serializeUsersQueryParams } from '@/hooks/use-users-search-params';
+import { GetUsersResponse, User } from '@/types/user';
 import { fetcher } from '@/lib/fetcher';
 
 export async function getUsers(p: {
-  q?: string | null;
-  page?: number | null;
-  limit?: number | null;
+  queryParamsAsString: string;
   signal?: AbortSignal;
 }) {
-  const queryParams = serializeUsersQueryParams(p);
-  return fetcher<GetUsersResponse | null>(`/user${queryParams}`, {
+  return fetcher<GetUsersResponse | null>(`/user${p.queryParamsAsString}`, {
+    signal: p.signal,
+  });
+}
+
+export async function getUser(p: { id: string; signal?: AbortSignal }) {
+  return fetcher<User | null>(`/user/${p.id}`, {
     signal: p.signal,
   });
 }

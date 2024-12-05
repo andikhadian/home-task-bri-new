@@ -13,7 +13,10 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { getUsers } from '@/api-handler/user';
-import { useUsersQueryParams } from '@/hooks/use-users-search-params';
+import {
+  serializeUsersQueryParams,
+  useUsersQueryParams,
+} from '@/hooks/use-users-search-params';
 import {
   Pagination,
   PaginationContent,
@@ -21,13 +24,18 @@ import {
   PaginationLink,
 } from '@/components/ui/pagination';
 import { Input } from '@/components/ui/input';
+import { DeleteButton } from './delete-button';
 
 export function UsersList() {
   const [queryParams, setQueryParams] = useUsersQueryParams();
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['get-users', queryParams],
-    queryFn: (ctx) => getUsers({ ...queryParams, signal: ctx.signal }),
+    queryFn: (ctx) =>
+      getUsers({
+        queryParamsAsString: serializeUsersQueryParams(queryParams),
+        signal: ctx.signal,
+      }),
   });
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,9 +130,7 @@ export function UsersList() {
                     <Button asChild size='sm' variant='outline'>
                       <Link href={`/dashboard/${user.id}`}>Detail</Link>
                     </Button>
-                    <Button size='sm' variant='destructive'>
-                      Delete
-                    </Button>
+                    <DeleteButton userId={user.id} onUserDeleted={refetch} />
                   </div>
                 </TableCell>
               </TableRow>
