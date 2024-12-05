@@ -1,17 +1,9 @@
-import { LoginUser } from '@/types/user';
-import { BASE_URL } from './config';
+import { fetcher } from '@/lib/fetcher';
+import { LoginUserResponse } from '@/types/user';
 
-export async function loginWithCredentials(
-  email: string,
-  password: string
-): Promise<LoginUser | null> {
-  const res = await fetch(`${BASE_URL}/auth/login`, {
+export async function loginWithCredentials(email: string, password: string) {
+  return fetcher<LoginUserResponse | null>('/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ email, password }),
-    headers: { 'Content-Type': 'application/json' },
+    body: { email, password },
   });
-
-  if (!res.ok) return null;
-
-  return res.json();
 }

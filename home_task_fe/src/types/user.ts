@@ -8,7 +8,15 @@ export interface User {
   created_at?: string;
 }
 
-export interface LoginUser {
+export interface LoginUserResponse {
   access_token: string;
   user: User;
+}
+
+export interface GetUsersResponse {
+  data: User[];
+  total: number;
+  total_pages: number;
+  page: number;
+  limit: number;
 }
